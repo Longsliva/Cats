@@ -1,4 +1,5 @@
 using Godot;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,20 +7,23 @@ using System.Linq;
 namespace Main;
 public partial class Target : Sprite2D
 {
-    Random rnd = new Random();
-    const float MAX_SPEED = 120;
+    const int MAX_SPEED = 360;
+    const int MIN_SPEED = 120;
 
-	Vector2I MoveToThis;
+    readonly Random RndGen = new();
+
+    Vector2I MoveToThis;
 	float CurrentSpeed;
+	float targetSpeed;
 
-	int counter = 0;
-	float needAngle = 0f;
+	sbyte IsRotationToRight = 1;
 
 	bool IsFliping = false;
+	float waitTime = 0f;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		List<string> allCats = DirAccess.GetFilesAt("res://Cats").ToList();
+		List<string> allCats = DirAccess.GetFilesAt("res://Media/Cats/").ToList();
 		for(int i = 0; i < allCats.Count; i++)
 		{
 			if (!allCats[i].EndsWith(".import"))
@@ -33,56 +37,60 @@ public partial class Target : Sprite2D
 			}
 		}
         
-        Texture = GD.Load<Texture2D>("Cats/" + allCats[rnd.Next(allCats.Count)]);
-	}
+        Texture = GD.Load<Texture2D>("res://Media/Cats/" + allCats[RndGen.Next(allCats.Count)]);
+		Button clickHandler = new Button()
+		{
+			Size = Texture.GetSize(),
+			Position = -Texture.GetSize() / 2,
+			Flat = true,
+			FocusMode = Control.FocusModeEnum.None
+        };
+		clickHandler.Pressed += Clicked;
+		AddChild(clickHandler);
+
+		GetNewRandomTargetPosition();
+
+		CurrentSpeed = RndGen.Next(MIN_SPEED, MAX_SPEED);
+        targetSpeed = RndGen.Next(MIN_SPEED, MAX_SPEED);
+    }
 
 	public override void _Process(double delta)
 	{
-		if(Position == MoveToThis)
+        
+
+        if (waitTime > 0)
 		{
-			counter = rnd.Next(5);
-			GetNewRandomTargetPosition();
+			waitTime -= (float)delta;
+            Rotation = Mathf.MoveToward(Rotation, 0.1f * IsRotationToRight, (float)delta/5);
+            if (Rotation == 0.1f * IsRotationToRight) IsRotationToRight *= -1;
+            return;
+		}
+
+		if (IsFliping) return;
+
+		if(CurrentSpeed == targetSpeed) targetSpeed = RndGen.Next(MIN_SPEED, MAX_SPEED);
+		else CurrentSpeed = Mathf.MoveToward(CurrentSpeed, targetSpeed, (float)delta);
+
+        Rotation = Mathf.MoveToward(Rotation, 0.1f * IsRotationToRight, (float)delta);
+        if (Rotation == 0.1f * IsRotationToRight) IsRotationToRight *= -1;
+
+        if (Position == MoveToThis)
+		{
+			waitTime = RndGen.Next(50, 150) / 100f;
+            GetNewRandomTargetPosition();
 		}
 		else
 		{
-			if(Rotation == needAngle)
-			{
-                if (counter > 0)
-                {
-                    counter--;
-                }
-                else
-                {
-					Position = Position.MoveToward(MoveToThis, (float)delta);
-                }
-            }
-			else
-			{
-				Rotation = Mathf.MoveToward(Rotation, needAngle, (float)delta);
-			}
-
-			
+			Position = Position.MoveToward(MoveToThis, (float)delta* CurrentSpeed);
 		}
 	}
 	private void GetNewRandomTargetPosition()
 	{
-        MoveToThis = new Vector2I(rnd.Next(20, Statics.SCREEN_SIZE_X - 20), rnd.Next(20, Statics.SCREEN_SIZE_Y - 20));
+        MoveToThis = new Vector2I(RndGen.Next(50, Statics.SCREEN_SIZE_X - 50), RndGen.Next(50, Statics.SCREEN_SIZE_Y - 50));
 		Vector2 forDraw = Position - MoveToThis;
-        float needRot;
-        if (forDraw.X >= 0 && forDraw.Y >= 0 || forDraw.X < 0 && forDraw.Y < 0)
-        {
-            needRot = MathF.Abs(MathF.Atan(forDraw.Y / forDraw.X));
-        }
-        else
-        {
-            needRot = MathF.Abs(MathF.Atan(forDraw.X / forDraw.Y));
-        }
 
-        if (forDraw.X >= 0 && forDraw.Y >= 0) needRot += MathF.PI / 2;
-        if (forDraw.X < 0 && forDraw.Y < 0) needRot += MathF.PI * 1.5f;
-        if (forDraw.X < 0 && forDraw.Y >= 0) needRot += MathF.PI;
-        needRot -= MathF.PI / 2;
-		needAngle = needRot/15;
+		if (forDraw.X < 0 && FlipH) Flip();
+		if (forDraw.X > 0 && !FlipH) Flip();
     }
 	private async void Flip()
 	{
@@ -102,5 +110,18 @@ public partial class Target : Sprite2D
         }
 
         IsFliping = false;
+	}
+
+	public async void Clicked()
+	{
+		Hide();
+		AudioStreamPlayer temp = new()
+		{
+			Stream = GD.Load<AudioStream>("res://Media/Audio/SFX/Clicked.mp3"),
+			Autoplay = true
+		};
+		AddChild(temp);
+		await ToSignal(temp, "finished");
+		QueueFree();
 	}
 }

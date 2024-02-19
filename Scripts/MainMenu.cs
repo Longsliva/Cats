@@ -15,4 +15,9 @@ public partial class MainMenu : Control
 	public override void _Process(double delta)
 	{
 	}
+
+	public void StartCats()
+	{
+		GetTree().ChangeSceneToFile("res://Game.tscn");
+	}
 }

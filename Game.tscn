@@ -1,11 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://ctsmq7x122pqm"]
 
-[ext_resource type="Script" path="res://Scripts/MainScene.cs" id="1_vp3e0"]
+[ext_resource type="Script" path="res://Scripts/MainScene.cs" id="1_71yus"]
 
 [sub_resource type="Curve2D" id="Curve2D_7xy88"]
 
 [node name="Node2D" type="Node2D"]
-script = ExtResource("1_vp3e0")
+script = ExtResource("1_71yus")
 
 [node name="Path2D" type="Path2D" parent="."]
 curve = SubResource("Curve2D_7xy88")
