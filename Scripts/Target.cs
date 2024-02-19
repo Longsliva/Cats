@@ -20,6 +20,9 @@ public partial class Target : Sprite2D
 
 	bool IsFliping = false;
 	float waitTime = 0f;
+
+	public bool IsReadyToDel = false;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -122,6 +125,7 @@ public partial class Target : Sprite2D
 		};
 		AddChild(temp);
 		await ToSignal(temp, "finished");
-		QueueFree();
-	}
+		IsReadyToDel = true;
+
+    }
 }
