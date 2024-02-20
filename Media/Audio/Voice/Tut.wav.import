@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://ck524i141p6uq"
-path="res://.godot/imported/Обучение.wav-03b725ba28b0646074cba306076aeda5.sample"
+path="res://.godot/imported/Tut.wav-e92fc1a227dad5fbad7180034243f940.sample"
 
 [deps]
 
-source_file="res://Media/Audio/Voice/Обучение.wav"
-dest_files=["res://.godot/imported/Обучение.wav-03b725ba28b0646074cba306076aeda5.sample"]
+source_file="res://Media/Audio/Voice/Tut.wav"
+dest_files=["res://.godot/imported/Tut.wav-e92fc1a227dad5fbad7180034243f940.sample"]
 
 [params]
 

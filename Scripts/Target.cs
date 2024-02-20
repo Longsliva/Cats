@@ -4,6 +4,8 @@ using System;
 namespace Main;
 public abstract partial class Target : Sprite2D
 {
+    protected string clickedSound = "res://Media/Audio/SFX/Clicked.mp3";
+
     const int MAX_SPEED = 360;
     const int MIN_SPEED = 120;
 
@@ -125,7 +127,7 @@ public abstract partial class Target : Sprite2D
 	{
 		AudioStreamPlayer temp = new()
 		{
-			Stream = GD.Load<AudioStream>("res://Media/Audio/SFX/Clicked.mp3"),
+			Stream = GD.Load<AudioStream>(clickedSound),
 			Autoplay = true
 		};
 		AddChild(temp);

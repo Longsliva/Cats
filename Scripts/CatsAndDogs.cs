@@ -34,6 +34,8 @@ public partial class Dogs : Target
     public bool IsSelfDistract;
     public Dogs()
     {
+        clickedSound = "res://Media/Audio/SFX/ClickedDog.mp3";
+
         List<string> allDogs = DirAccess.GetFilesAt("res://Media/Dogs/").ToList();
         for (int i = 0; i < allDogs.Count; i++)
         {

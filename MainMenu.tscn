@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://bm2ki4k8aa8r3"]
+[gd_scene load_steps=4 format=3 uid="uid://bm2ki4k8aa8r3"]
 
 [ext_resource type="Script" path="res://Scripts/MainMenu.cs" id="1_6s8lp"]
+[ext_resource type="AudioStream" uid="uid://ck524i141p6uq" path="res://Media/Audio/Voice/Tut.wav" id="2_ib7gn"]
 
 [sub_resource type="Theme" id="Theme_hdbjs"]
 default_font_size = 100
@@ -32,19 +33,32 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Кошки"
 flat = true
 
-[node name="Button2" type="Button" parent="VBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
 visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="VBoxContainer2"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-text = "Собаки"
+theme_override_font_sizes/font_size = 48
+text = "Поймай котят! Чтобы поймать котёнка, нажми на него! Если котят будет слишком много, они разбегутся! Когда ты поймаешь много котят начнут приходить озорные пёсики! Если поймать песика, он убежит вместе с частью пойманных котят! Не нажимай на пёсиков!"
+horizontal_alignment = 3
+autowrap_mode = 3
+
+[node name="Button" type="Button" parent="VBoxContainer2"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Начать"
 flat = true
 
-[node name="Label" type="Label" parent="."]
-visible = false
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 113.0
-text = "Поймай котят! --- Чтобы поймать котёнка, нажми на него! Если котят будет слишком много, они разбегутся! ---
-Когда ты поймаешь много котят начнут приходить озорные пёсики! Если поймать песика, он убежит вместе с частью пойманных котят! Не нажимай на пёсиков!"
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_ib7gn")
 
 [connection signal="pressed" from="VBoxContainer/Button" to="." method="StartCats"]
+[connection signal="pressed" from="VBoxContainer2/Button" to="." method="StartGame"]

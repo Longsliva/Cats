@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://by52vwdp2xymv"
-path="res://.godot/imported/Молодец2.wav-e8155f9ff601f1425bd556eef7d0b84c.sample"
+path="res://.godot/imported/1.wav-c0346b83021f751c5f33d880bcf41eb4.sample"
 
 [deps]
 
-source_file="res://Media/Audio/Voice/Молодец2.wav"
-dest_files=["res://.godot/imported/Молодец2.wav-e8155f9ff601f1425bd556eef7d0b84c.sample"]
+source_file="res://Media/Audio/Voice/Great/1.wav"
+dest_files=["res://.godot/imported/1.wav-c0346b83021f751c5f33d880bcf41eb4.sample"]
 
 [params]
 

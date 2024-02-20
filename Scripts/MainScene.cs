@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Main;
 public partial class MainScene : Control
@@ -13,12 +14,30 @@ public partial class MainScene : Control
 
     Node TargetParent;
 	PathFollow2D spawnArea;
-	Random rnd = new();
-	List<Target> targets = new();
+    readonly Random rnd = new();
+    readonly List<Target> targets = new();
 	int Score = 0;
-	// Called when the node enters the scene tree for the first time.
+    // Called when the node enters the scene tree for the first time.
+    readonly AudioStreamPlayer great = new();
+    List<string> greatStreams;
+
 	public override void _Ready()
 	{
+        greatStreams = DirAccess.GetFilesAt("res://Media/Audio/Voice/Great/").ToList();
+        for (int i = 0; i < greatStreams.Count; i++)
+        {
+            if (!greatStreams[i].EndsWith(".import"))
+            {
+                greatStreams.RemoveAt(i);
+                i--;
+            }
+            else
+            {
+                greatStreams[i] = greatStreams[i].Replace(".import", string.Empty);
+                greatStreams[i] = "res://Media/Audio/Voice/Great/" + greatStreams[i];
+            }
+        }
+
         TargetParent = GetNode("TargetParent");
         scoreLabel = GetNode<Label>("Label");
         scoreLabelBase = scoreLabel.Text;
@@ -31,6 +50,7 @@ public partial class MainScene : Control
         a.Curve.AddPoint(new Vector2(Statics.SCREEN_SIZE_X + SPAWN_OFFSET, Statics.SCREEN_SIZE_Y + SPAWN_OFFSET));
         a.Curve.AddPoint(new Vector2(Statics.SCREEN_SIZE_X+ SPAWN_OFFSET, -SPAWN_OFFSET));
 
+        AddChild(great);
 
 		NewTargetSpawn(3);
 	}
@@ -42,12 +62,22 @@ public partial class MainScene : Control
         {
 			if (targets[i].IsRunAway)
 			{
-				if (targets[i] is Cats) Score++;
-				else Score--;
+				if (targets[i] is Cats)
+                {
+                    Score++;
+                    if(Score%10 == 0)
+                    {
+                        great.Stream = GD.Load<AudioStream>(greatStreams[rnd.Next(greatStreams.Count)]);
+                        great.Play();
+                    }
+                }
+				else
+                {
+                    if(!(targets[i] as Dogs).IsSelfDistract) Score--;
+                }
                 targets.RemoveAt(i);
 				i--;
                 scoreLabel.Text = scoreLabelBase + Score;
-
             }
 		}
     }

@@ -18,6 +18,13 @@ public partial class MainMenu : Control
 
 	public void StartCats()
 	{
-		GetTree().ChangeSceneToFile("res://Game.tscn");
-	}
+		GetNode<Control>("VBoxContainer").Hide();
+        GetNode<Control>("VBoxContainer2").Show();
+		GetNode<AudioStreamPlayer>("AudioStreamPlayer").Play();
+    }
+
+	public void StartGame()
+	{
+        GetTree().ChangeSceneToFile("res://Game.tscn");
+    }
 }
