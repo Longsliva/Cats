@@ -1,12 +1,15 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace Main;
-public partial class MainScene : Node2D
+public partial class MainScene : Control
 {
+    string scoreLabelBase;
+
 	const int SPAWN_OFFSET = 80;
+
+	Label scoreLabel;
 
 	PathFollow2D spawnArea;
 	Random rnd = new();
@@ -15,6 +18,8 @@ public partial class MainScene : Node2D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		scoreLabel = GetNode<Label>("Label");
+        scoreLabelBase = scoreLabel.Text;
         spawnArea = GetNode<PathFollow2D>("Path2D/PathFollow2D");
         Path2D a = GetNode<Path2D>("Path2D");
 
@@ -31,25 +36,29 @@ public partial class MainScene : Node2D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		for(int i = 0; i < targets.Count; i++)
+        for (int i = 0; i < targets.Count; i++)
         {
-			if (targets[i].IsReadyToDel)
+			if (!targets[i].Visible)
 			{
-				Score++;
+				if (targets[i] is Cats) Score++;
+				else Score--;
                 targets.RemoveAt(i);
 				i--;
-			}
+                scoreLabel.Text = scoreLabelBase + Score;
+
+            }
 		}
-	}
-    private void NewTargetSpawn()
+    }
+    public void NewTargetSpawn()
     {
+        GD.Print("eafaw");
 		NewTargetSpawn(1);
     }
     private void NewTargetSpawn(int spawnCount)
 	{
 		GetNode<Timer>("Timer").WaitTime = rnd.Next(10,20)/10f;
 		
-		if(targets.Count < 2)
+		if(targets.Count == 0)
 		{
 			spawnCount = 3;
         }
@@ -57,10 +66,31 @@ public partial class MainScene : Node2D
         for(int i = 0; i < spawnCount; i++)
 		{
             spawnArea.ProgressRatio = rnd.NextSingle();
-            targets.Add(new Target()
-            {
-                Position = spawnArea.Position,
-            });
+            
+			if(Score>15)
+			{
+                if(rnd.Next(4) == 0)
+				{
+                    targets.Add(new Dogs()
+                    {
+                        Position = spawnArea.Position,
+                    });
+                }
+				else
+				{
+                    targets.Add(new Cats()
+                    {
+                        Position = spawnArea.Position,
+                    });
+                }
+            }
+			else
+			{
+                targets.Add(new Cats()
+                {
+                    Position = spawnArea.Position,
+                });
+            }
 
             AddChild(targets[^1]);
         }

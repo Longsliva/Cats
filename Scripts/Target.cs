@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Main;
-public partial class Target : Sprite2D
+public abstract partial class Target : Sprite2D
 {
     const int MAX_SPEED = 360;
     const int MIN_SPEED = 120;
 
-    readonly Random RndGen = new();
+    readonly protected Random RndGen = new();
 
     Vector2I MoveToThis;
 	float CurrentSpeed;
@@ -26,21 +26,7 @@ public partial class Target : Sprite2D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		List<string> allCats = DirAccess.GetFilesAt("res://Media/Cats/").ToList();
-		for(int i = 0; i < allCats.Count; i++)
-		{
-			if (!allCats[i].EndsWith(".import"))
-			{
-				allCats.RemoveAt(i);
-				i--;
-			}
-			else
-			{
-				allCats[i] = allCats[i].Replace(".import", string.Empty);
-			}
-		}
-        
-        Texture = GD.Load<Texture2D>("res://Media/Cats/" + allCats[RndGen.Next(allCats.Count)]);
+		
 		Button clickHandler = new Button()
 		{
 			Size = Texture.GetSize(),
@@ -59,8 +45,6 @@ public partial class Target : Sprite2D
 
 	public override void _Process(double delta)
 	{
-        
-
         if (waitTime > 0)
 		{
 			waitTime -= (float)delta;
@@ -125,7 +109,6 @@ public partial class Target : Sprite2D
 		};
 		AddChild(temp);
 		await ToSignal(temp, "finished");
-		IsReadyToDel = true;
-
+		QueueFree();
     }
 }
