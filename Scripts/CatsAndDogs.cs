@@ -31,6 +31,7 @@ public partial class Cats : Target
 
 public partial class Dogs : Target
 {
+    public bool IsSelfDistract;
     public Dogs()
     {
         List<string> allDogs = DirAccess.GetFilesAt("res://Media/Dogs/").ToList();
@@ -48,5 +49,23 @@ public partial class Dogs : Target
         }
 
         Texture = GD.Load<Texture2D>("res://Media/Dogs/" + allDogs[RndGen.Next(allDogs.Count)]);
+    }
+    public override void _Ready()
+    {
+        base._Ready();
+        Timer temp = new()
+        {
+            WaitTime = RndGen.NextSingle() * 20,
+            Autostart = true
+        };
+        temp.Timeout += TimerOut;
+        AddChild(temp);
+    }
+
+    private void TimerOut()
+    {
+        if (IsFalling) return;
+        IsSelfDistract = true;
+        Clicked();
     }
 }

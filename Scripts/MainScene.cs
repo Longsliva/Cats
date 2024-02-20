@@ -11,6 +11,7 @@ public partial class MainScene : Control
 
 	Label scoreLabel;
 
+    Node TargetParent;
 	PathFollow2D spawnArea;
 	Random rnd = new();
 	List<Target> targets = new();
@@ -18,7 +19,8 @@ public partial class MainScene : Control
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		scoreLabel = GetNode<Label>("Label");
+        TargetParent = GetNode("TargetParent");
+        scoreLabel = GetNode<Label>("Label");
         scoreLabelBase = scoreLabel.Text;
         spawnArea = GetNode<PathFollow2D>("Path2D/PathFollow2D");
         Path2D a = GetNode<Path2D>("Path2D");
@@ -38,7 +40,7 @@ public partial class MainScene : Control
 	{
         for (int i = 0; i < targets.Count; i++)
         {
-			if (!targets[i].Visible)
+			if (targets[i].IsRunAway)
 			{
 				if (targets[i] is Cats) Score++;
 				else Score--;
@@ -51,7 +53,6 @@ public partial class MainScene : Control
     }
     public void NewTargetSpawn()
     {
-        GD.Print("eafaw");
 		NewTargetSpawn(1);
     }
     private void NewTargetSpawn(int spawnCount)
@@ -92,7 +93,7 @@ public partial class MainScene : Control
                 });
             }
 
-            AddChild(targets[^1]);
+            TargetParent.AddChild(targets[^1]);
         }
     }
 }
