@@ -4,4 +4,4 @@
 
 # Игровой процесс
 
-![](https://s9.gifyu.com/images/SF3sR.gif)
+![](https://github.com/Cats/anim.gif)
