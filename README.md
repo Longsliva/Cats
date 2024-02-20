@@ -4,4 +4,4 @@
 
 # Игровой процесс
 
-![](https://github.com/Cats/anim.gif)
+![](https://github.com/Longsliva/Cats/blob/main/anim.gif)
